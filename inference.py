@@ -9,7 +9,7 @@ import sys
 
 
 #loading the Tflite converted model here.
-interpreter = tf.lite.Interpreter(model_path='/content/classifier.tflite')
+interpreter = tf.lite.Interpreter(model_path='/content/simple_classifier/trained_model/classifier.tflite')
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
