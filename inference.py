@@ -16,6 +16,7 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 
+
 def split_image(input_path, output_paths):
     """
     This function take a image and splits it into 3 pices. The split is done
@@ -111,9 +112,10 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: python script.py <image_path>")
     else:
+    	a = time.time()
         image_path = sys.argv[1]
-        predict(image_path)
-
+        print(predict(image_path))
+	print(f"ran in {time.time()-a} seconds")
 
 
 
