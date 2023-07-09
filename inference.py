@@ -112,10 +112,10 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: python script.py <image_path>")
     else:
-    	a = time.time()
+        a = time.time()
         image_path = sys.argv[1]
         print(predict(image_path))
-	print(f"ran in {time.time()-a} seconds")
+        print(f"ran in {time.time()-a} seconds")
 
 
 
