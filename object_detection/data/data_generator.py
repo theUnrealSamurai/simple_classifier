@@ -110,7 +110,7 @@ class DataGenerator(Dataset):
             noise = get_noisy_image(self.IMG_SIZE, self.IMG_SIZE, 'RGB')
             labels = []
             for i in range(9):
-                slot_image, id  = get_slot_machine_images('/home/roshan/Code/Mamiya/simple_classifier/object_detection/data/raw_images')
+                slot_image, id  = get_slot_machine_images('/content/simple_classifier/object_detection/data/raw_images')
                 image, label = place_image_inside_background(noise, slot_image)
                 noise = image
                 # labels.append([id].extend(label))
@@ -137,7 +137,7 @@ def write_list_to_txt(my_list, file_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Generate dataset and save images and labels.")
-    parser.add_argument("--base_path", type=str, default="/home/roshan/Code/Mamiya/simple_classifier/object_detection/data/generated", help="Base path to save images and labels")
+    parser.add_argument("--base_path", type=str, default="/content/slot_machines", help="Base path to save images and labels")
     parser.add_argument("--img_size", type=int, default=640, help="Image size (both height and width)")
     parser.add_argument("--n", type=int, default=10, help="Number of images to generate")
     args = parser.parse_args()
