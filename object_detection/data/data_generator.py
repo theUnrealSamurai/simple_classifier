@@ -1,9 +1,20 @@
-import os, random, cv2
+import os, random, argparse
 import numpy as np
-import matplotlib.pyplot as plt
 from glob import glob
+from tqdm import tqdm
 from PIL import Image
 from torch.utils.data import Dataset
+
+
+classes = {
+    'bar': 0,
+    'bell': 1,
+    'cherry': 2,
+    'clown': 3,
+    'elephant': 4,
+    'grape': 5,
+    'z': 6,
+}
 
 
 def get_noisy_image(length, width, mode):
@@ -33,7 +44,7 @@ def get_slot_machine_images(path):
     img_path = random.choice(images)
     img = Image.open(img_path)
     img = img.convert("RGB")
-    return np.array(img)
+    return np.array(img), classes[img_path.split('/')[-2]]
 
 
 
@@ -59,45 +70,12 @@ def place_image_inside_background(background, foreground):
     return background, [x_center, y_center, width, height]
 
 
-def is_overlap(box1, box2):
-    print(box1, box2)
-    x_center1, y_center1, width1, height1 = box1
-    x_center2, y_center2, width2, height2 = box2
-
-    left1 = x_center1 - width1 / 2
-    right1 = x_center1 + width1 / 2
-    top1 = y_center1 - height1 / 2
-    bottom1 = y_center1 + height1 / 2
-
-    left2 = x_center2 - width2 / 2
-    right2 = x_center2 + width2 / 2
-    top2 = y_center2 - height2 / 2
-    bottom2 = y_center2 + height2 / 2
-
-    x_overlap = max(0, min(right1, right2) - max(left1, left2))
-    y_overlap = max(0, min(bottom1, bottom2) - max(top1, top2))
-
-    intersection_area = x_overlap * y_overlap
-
-    area1 = width1 * height1
-    area2 = width2 * height2
-
-    union_area = area1 + area2 - intersection_area
-
-    iou = intersection_area / union_area
-
-    return iou > 0
-
-
-
-
-
 def check_overlap(boxes):
     for i, box1 in enumerate(boxes):
-        x1, y1, w1, h1 = box1
+        class_id, x1, y1, w1, h1 = box1
 
         for j, box2 in enumerate(boxes[i+1:]):
-            x2, y2, w2, h2 = box2
+            class_id, x2, y2, w2, h2 = box2
 
             # Convert the bounding box coordinates to (x_min, y_min, x_max, y_max) in pixel values
             img_width, img_height = 1024, 1024
@@ -119,31 +97,58 @@ def check_overlap(boxes):
 
 
 class DataGenerator(Dataset):
-    def __init__(self, n):
+    def __init__(self, n, img_size):
         """n is the number of images to generate"""
         self.n = n
-
+        self.IMG_SIZE = img_size
+    
     def __len__(self):
-        return len(self.n)
+        return self.n
     
     def __getitem__(self, index):
-        noise = get_noisy_image(1024, 1024, 'RGB')
-        labels = []
-        for i in range(9):
-            slot_image  = get_slot_machine_images('/home/roshan/Code/Mamiya/simple_classifier/object_detection/data/raw_images')
-            image, label = place_image_inside_background(noise, slot_image)
-            noise = image
-            labels.append(label)
+        while True:
+            noise = get_noisy_image(self.IMG_SIZE, self.IMG_SIZE, 'RGB')
+            labels = []
+            for i in range(9):
+                slot_image, id  = get_slot_machine_images('/home/roshan/Code/Mamiya/simple_classifier/object_detection/data/raw_images')
+                image, label = place_image_inside_background(noise, slot_image)
+                noise = image
+                # labels.append([id].extend(label))
+                label.insert(0, id)
+                labels.append(label)
+            if not check_overlap(labels):
+                break
 
         return image, labels
     
-dset = DataGenerator(3)
 
-x = dset[0]
+def save_as_rgb_jpeg(image_array, file_path):
+    image = Image.fromarray(np.uint8(image_array))
+    image.save(file_path)
 
-print(x[0].shape)
-print(x[1])
-# print(is_overlap(x[1][0], x[1][1]))
-print(check_overlap(x[1]))
-plt.imshow(x[0])
-plt.show()
+def write_list_to_txt(my_list, file_path):
+    with open(file_path, "w") as file:
+        lines = []
+        for i in my_list:
+            line = " ".join([str(j) for j in i]) + "\n"
+            lines.append(line)
+        file.writelines(lines)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Generate dataset and save images and labels.")
+    parser.add_argument("--base_path", type=str, default="/home/roshan/Code/Mamiya/simple_classifier/object_detection/data/generated", help="Base path to save images and labels")
+    parser.add_argument("--img_size", type=int, default=640, help="Image size (both height and width)")
+    parser.add_argument("--n", type=int, default=10, help="Number of images to generate")
+    args = parser.parse_args()
+
+    os.makedirs(os.path.join(args.base_path, "images"), exist_ok=True)
+    os.makedirs(os.path.join(args.base_path, "labels"), exist_ok=True)
+
+    dset = DataGenerator(n=args.n, img_size=args.img_size)
+    for i in tqdm(range(args.n)):
+        img, labels = dset[i]
+        img_path = os.path.join(args.base_path, f"images/{str(i).zfill(5)}.jpg")
+        label_path = os.path.join(args.base_path, f"labels/{str(i).zfill(5)}.txt")
+        save_as_rgb_jpeg(img, img_path)
+        write_list_to_txt(labels, label_path)
