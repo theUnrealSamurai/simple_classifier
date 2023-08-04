@@ -60,6 +60,7 @@ def classify_image(img_path):
     respective class"""
 
     img = tf.keras.preprocessing.image.load_img(img_path, target_size=(224, 224))
+    print('loaded img', img)
     x = tf.keras.preprocessing.image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = tf.keras.applications.mobilenet.preprocess_input(x)
