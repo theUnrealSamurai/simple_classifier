@@ -6,10 +6,12 @@ import numpy as np
 import time
 import sys
 
+from PIL import Image
+
 
 
 #loading the Tflite converted model here.
-interpreter = tf.lite.Interpreter(model_path='./model.tflite')
+interpreter = tf.lite.Interpreter(model_path='./sl_model.tflite')
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
@@ -59,8 +61,8 @@ def classify_image(img_path):
     """ This function takes one single input image and classifies it into it's
     respective class"""
 
-    img = tf.keras.preprocessing.image.load_img(img_path, target_size=(224, 224))
-    print('loaded img', img)
+    img = tf.keras.preprocessing.image.load_img(img_path, grayscale=False, color_mode='rgb', target_size=(224, 224))
+
     x = tf.keras.preprocessing.image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = tf.keras.applications.mobilenet.preprocess_input(x)
