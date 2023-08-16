@@ -1,0 +1,7 @@
+path: /contents/slot_machines
+train: images/  
+val: images/  
+
+
+nc: 7
+names: ['bar', 'bell', 'cherry', 'clown', 'elephant', 'grape', 'z']
