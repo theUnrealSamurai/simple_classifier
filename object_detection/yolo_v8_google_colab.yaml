@@ -1,4 +1,4 @@
-path: /contents/slot_machines
+path: /content/slot_machines
 train: images/  
 val: images/  
 
