@@ -1,25 +1,73 @@
 import 'package:flutter/material.dart';
-import 'get_image_from_camera.dart';
-import 'package:camera/camera.dart';
+import 'package:pytorch_lite/native_wrapper.dart';
+import 'run_model_by_image_demo.dart';
+import 'run_model_by_camera_demo.dart';
 
 Future<void> main() async {
-  // Ensure that plugin services are initialized so that `availableCameras()`
-  // can be called before `runApp()`
-  WidgetsFlutterBinding.ensureInitialized();
+  await PytorchFfi.init();
+  runApp(const ChooseDemo());
+}
 
-  // Obtain a list of the available cameras on the device.
-  final cameras = await availableCameras();
+class ChooseDemo extends StatefulWidget {
+  const ChooseDemo({Key? key}) : super(key: key);
 
-  // Get a specific camera from the list of available cameras.
-  final firstCamera = cameras.first;
+  @override
+  State<ChooseDemo> createState() => _ChooseDemoState();
+}
 
-  runApp(
-    MaterialApp(
-      theme: ThemeData.dark(),
-      home: TakePictureScreen(
-        // Pass the appropriate camera to the TakePictureScreen widget.
-        camera: firstCamera,
+class _ChooseDemoState extends State<ChooseDemo> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Pytorch Mobile Example'),
+        ),
+        body: Builder(builder: (context) {
+          return Center(
+            child: Column(
+              children: [
+                TextButton(
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RunModelByCameraDemo()),
+                    )
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    "Run Model with Camera",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RunModelByImageDemo()),
+                    )
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    "Run Model with Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        }),
       ),
-    ),
-  );
+    );
+  }
 }

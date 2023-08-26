@@ -30,7 +30,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       // Get a specific camera from the list of available cameras.
       widget.camera,
       // Define the resolution to use.
-      ResolutionPreset.medium,
+      ResolutionPreset.ultraHigh,
     );
 
     // Next, initialize the controller. This returns a Future.
@@ -104,6 +104,13 @@ class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
 
   const DisplayPictureScreen({super.key, required this.imagePath});
+
+  // ModelObjectDetection objectModel = await PytorchLite.loadObjectDetectionModel(
+  //         "assets/models/yolov5s.torchscript", 80, 640, 640,
+  //         labelPath: "assets/labels/labels_objectDetection_Coco.txt",
+  //         objectDetectionModelType: ObjectDetectionModelType.yolov5);
+
+  // String imagePrediction = await classificationModel.getImagePrediction(await File(image.path).readAsBytes());
 
   @override
   Widget build(BuildContext context) {
