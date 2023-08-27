@@ -1,0 +1,7 @@
+bar
+bell
+cherry
+clown
+elephant
+grape
+z 
