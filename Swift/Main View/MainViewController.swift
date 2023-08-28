@@ -24,7 +24,7 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let imagePath = Bundle.main.path(forResource: "P-1", ofType: "png")
+        let imagePath = Bundle.main.path(forResource: "dog", ofType: "png")
         let iconImage = UIImage(contentsOfFile:imagePath!)
         let targetSize = CGSize(width: 224, height: 224)
         let resizedImage = self.imagePredictor.resizeImage(image: iconImage!, targetSize: targetSize)

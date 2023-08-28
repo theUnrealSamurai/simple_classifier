@@ -1,9 +1,9 @@
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-Makes predictions from images using the MobileNet model.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ Makes predictions from images using the MobileNet model.
+ */
 
 import Vision
 import UIKit
@@ -18,29 +18,29 @@ import UIKit
 /// - Updates the delegate's `predictions` property
 /// - Tag: ImagePredictor
 class ImagePredictor {
-    /// - Tag: name
+    
     static func createImageClassifier() -> VNCoreMLModel {
-        // Use a default model configuration.
+        // デフォルトのモデルのコンフィグを使用
         let defaultConfig = MLModelConfiguration()
-
-        // Create an instance of the image classifier's wrapper class.
-        let imageClassifierWrapper = try? Test2(configuration: defaultConfig)
-
+        
+        // 生成したモデルのクラスを呼び出し、モデルを呼び出すためのラッパーを取得
+        let imageClassifierWrapper = try? Test(configuration: defaultConfig)
+        
         guard let imageClassifier = imageClassifierWrapper else {
             fatalError("App failed to create an image classifier model instance.")
         }
-
-        // Get the underlying model instance.
+        
+        // モデルのインスタンスを取得
         let imageClassifierModel = imageClassifier.model
-
-        // Create a Vision instance using the image classifier's model instance.
+        
+        // Visionフレームワークの画像分類インスタンスを取得
         guard let imageClassifierVisionModel = try? VNCoreMLModel(for: imageClassifierModel) else {
             fatalError("App failed to create a `VNCoreMLModel` instance.")
         }
-
+        
         return imageClassifierVisionModel
     }
-
+    
     /// A common image classifier instance that all Image Predictor instances use to generate predictions.
     ///
     /// Share one ``VNCoreMLModel`` instance --- for each Core ML model file --- across the app,
@@ -62,36 +62,20 @@ class ImagePredictor {
     }
     
     func classifyImageTest(iconImage: UIImage) {
-        /**
-        let buffer = pixelBuffer(from: iconImage!)
-        print("buffer", buffer)
-        let mlarray = try! MLMultiArray(shape: [1, 224, 224, 3], dataType: MLMultiArrayDataType.float32 )
-        for i in 0 ..< 224 * 224 {
-            mlarray[i] = buffer[i] as NSNumber
-        }
-        print("reached here", mlarray)
-        */
         
         let orientation = CGImagePropertyOrientation(iconImage.imageOrientation)
         guard let photoImage = iconImage.cgImage else {
             fatalError("Photo doesn't have underlying CGImage.")
         }
-
+        
         let handler = VNImageRequestHandler(cgImage: photoImage, orientation: orientation)
-        print("handler", handler)
         
         let request = VNCoreMLRequest(model:imageClassifier)
-        print("request", request)
         
+        // 以下で画像分類を行う
         try! handler.perform([request])
-        print("res", request.results)
         
-        /**
-        guard let results = request.results as? [VNClassificationObservation] else {fatalError("Photo doesn't have underlying CGImage.")}
-
-        results.forEach({ (result) in
-            print("\(result.identifier) \(result.confidence * 100)")
-        })
-         */
+        // 分類結果を表示するコード
+        print("res", request.results!)
     }
 }

@@ -1,23 +1,20 @@
-import os
 from tensorflow import keras
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.preprocessing import image
 import tensorflow as tf
-import numpy as np
 
-# Set the path to the folder containing the image datasets
+# 画像情報が格納されているフォルダへのパスを指定
 data_path = './data/train_data'
 
-# Define the image dimensions and other parameters
+# 画像の情報、及び機械学習のパラメータ情報の定義
 image_width, image_height = 224, 224
 batch_size = 32
-num_classes = 7
+num_classes = 2 # 二値分類を指定
 
-# Use the ImageDataGenerator to preprocess the images and generate batches of data
+# ImageDataGeneratorを使用して、画像処理を施し、データをトレーニングする準備をする。
 data_generator = ImageDataGenerator(rescale=1.0/255.0)
-train_generator = data_generator.flow_from_directory(data_path,target_size=(image_width, image_height),batch_size=batch_size,class_mode='categorical')
+tg = data_generator.flow_from_directory(data_path,target_size=(image_width, image_height),batch_size=batch_size,class_mode='categorical')
 
-# Build the model
+# モデルを構築
 model = keras.Sequential([
     keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(image_width, image_height, 3)),
     keras.layers.MaxPooling2D((2, 2)),
@@ -30,16 +27,16 @@ model = keras.Sequential([
     keras.layers.Dense(num_classes, activation='softmax')
 ])
 
-# Compile the model
+# モデルをコンパイル
 model.compile(optimizer='adam',
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
-# Train the model
-model.fit(train_generator, epochs=6)
+# モデルをトレーニング
+model.fit(tg, epochs=6)
 
-# Save the trained model
-model.save('sl_model.h5')
+# モデルを物理ファイルに保存
+model.save('./model.h5')
 
 # Convert the model to TFLite format
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
