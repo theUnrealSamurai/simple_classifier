@@ -1,0 +1,14 @@
+path: /content/simple_classifier/object_detection/data/annotated_images
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 9
+names: ['bar', 'bell', 'cherry', 'clown', 'display', 'elephant', 'grape', 'tiger', 'z']
+
+roboflow:
+  workspace: slotmachien
+  project: slot-machine
+  version: 4
+  license: Private
+  url: https://app.roboflow.com/slotmachien/slot-machine/4
