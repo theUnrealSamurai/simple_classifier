@@ -2,6 +2,8 @@ bar
 bell
 cherry
 clown
-elephant
+display
+rhino
 grape
-z 
+tiger
+z

@@ -34,10 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future loadModel() async {
     String pathObjectDetectionModel =
-        "assets/models/yolov5s_slot_machine.torchscript";
+        "assets/models/yolov5s_mAP938_P861_R893.torchscript";
     try {
       _objectModel = await FlutterPytorch.loadObjectDetectionModel(
-          pathObjectDetectionModel, 7, 640, 640,
+          pathObjectDetectionModel, 9, 640, 640,
           labelPath: "assets/labels/labels.txt");
     } catch (e) {
       if (e is PlatformException) {
