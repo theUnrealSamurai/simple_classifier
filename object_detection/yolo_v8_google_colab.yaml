@@ -1,7 +1,7 @@
-path: /content/slot_machines
-train: images/  
-val: images/  
+path: /content/simple_classifier/object_detection/data/annotated_images/
+train: train/images/  
+val: valid/images/  
 
 
-nc: 7
-names: ['bar', 'bell', 'cherry', 'clown', 'elephant', 'grape', 'z']
+nc: 9
+names: ['bar', 'bell', 'cherry', 'clown', 'display', 'elephant', 'grape', 'tiger', 'z']
