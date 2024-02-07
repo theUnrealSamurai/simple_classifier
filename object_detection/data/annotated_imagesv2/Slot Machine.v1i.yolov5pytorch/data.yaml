@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 8
+names: ['7', 'Display', 'bar', 'bell', 'cherry', 'clown', 'grape', 'rhino']
+
+roboflow:
+  workspace: mits-nrxjt
+  project: slot-machine-w0bxc
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/mits-nrxjt/slot-machine-w0bxc/dataset/1
